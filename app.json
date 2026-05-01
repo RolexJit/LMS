@@ -1,14 +1,14 @@
 {
   "expo": {
-    "name": "NYCTICollege",
-    "slug": "NYCTICollege",
+    "name": "LmsApp",
+    "slug": "LmsApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo.jpeg",
+    "icon": "./assets/images.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/logo.jpeg",
+      "image": "./assets/images.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,19 +17,23 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo.jpeg",
+        "foregroundImage": "./assets/images.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.barindam.QuizApp"
+      "package": "com.barindam.LmsApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "a36a7518-ee51-47e8-8188-cb8a9ce0ba8a"
+        "projectId": "9baafae2-ef19-4646-abfe-00734d387d6c"
       }
-    }
+    },
+    "owner": "barindam",
+    "plugins": [
+      "expo-video"
+    ]
   }
 }

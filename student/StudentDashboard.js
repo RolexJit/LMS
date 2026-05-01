@@ -1,485 +1,359 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Dimensions, FlatList, Animated, Image, Easing
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  StatusBar,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Ionicons } from "@expo/vector-icons";
-import { LineChart } from "react-native-chart-kit";
-import StudentFab from "../components/studentFab";
 
-const { width } = Dimensions.get("window");
-import Svg, { Circle, Defs, LinearGradient as SvgLinearGradient, Stop } from "react-native-svg";
+export default function StudentDashboard({ onEnrollCourse }) {
 
-/* ================= MULTI-COLOR PROGRESS CIRCLE ================= */
-const MultiColorProgress = ({ size = 80, strokeWidth = 8, progress = 75, subject }) => {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (circumference * progress) / 100;
-
+  const [darkMode, setDarkMode] = useState(true);
+  const theme = darkMode ? darkTheme : lightTheme;
   return (
-    <View style={{ alignItems: "center" }}>
-      <Svg width={size} height={size}>
-        <Defs>
-          <SvgLinearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <Stop offset="0%" stopColor="#8b5cf6" />
-            <Stop offset="50%" stopColor="#22d3ee" />
-            <Stop offset="100%" stopColor="#facc15" />
-          </SvgLinearGradient>
-        </Defs>
+    <ScrollView
+      key={darkMode ? "dark" : "light"}
+      style={[styles.container, { backgroundColor: theme.bg }]}
+    >
+      <StatusBar
+        key={darkMode ? "dark" : "light"}
+        barStyle={darkMode ? "light-content" : "dark-content"}
+      />
 
-        {/* Background Circle */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="rgba(255,255,255,0.2)"
-          strokeWidth={strokeWidth}
-        />
+      {/* HEADER */}
+      <View style={[styles.header, { backgroundColor: theme.primary }]}>
+        <TouchableOpacity
+          style={[
+            styles.toggleBtn,
+            {
+              backgroundColor: theme.card,
+              padding: 8,
+              borderRadius: 20,
+            },
+          ]}
+          onPress={() => setDarkMode(!darkMode)}
+        >
+          <Text style={{ fontSize: 18 }}>
+            {darkMode ? "☀️" : "🌙"}
+          </Text>
+        </TouchableOpacity>
 
-        {/* Progress Circle */}
-        <Circle
-          cx={size / 2}
-          cy={size / 2}
-          r={radius}
-          stroke="url(#grad)"
-          strokeWidth={strokeWidth}
-          strokeLinecap="round"
-          strokeDasharray={`${circumference} ${circumference}`}
-          strokeDashoffset={strokeDashoffset}
-          rotation="-90"
-          originX={size / 2}
-          originY={size / 2}
-        />
-      </Svg>
+        <Text style={[styles.headerTitle, { color: theme.text }]}>
+          Learn with
+        </Text>
+        <Text style={[styles.headerBig, { color: theme.text }]}>
+          Live Industry Classes
+        </Text>
+        <Text style={[styles.headerDesc, { color: theme.subText }]}>
+          Upgrade your skills with real-time expert sessions,
+          practical assignments, and verified certificates.
+        </Text>
 
-      {/* Center Text */}
-      <View style={[StyleSheet.absoluteFillObject, { justifyContent: "center", alignItems: "center" ,}]}>
-        <Text style={{ fontSize: 16, fontWeight: "bold", color: "#fff" }}>{progress}%</Text>
+        <View style={styles.headerButtons}>
+          <TouchableOpacity
+            style={[
+              styles.joinBtn,
+              { backgroundColor: theme.card },
+            ]}
+          >
+            <Text style={{ color: theme.primary, fontWeight: "bold" }}>
+              Join Now
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.startBtn,
+              { borderColor: theme.text },
+            ]}
+          >
+            <Text style={{ color: theme.text }}>
+              Start Learning
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
-      {/* Subject Name */}
-      {subject && <Text style={{ marginTop: 8, fontWeight: "600", color: "#fff" }}>{subject}</Text>}
-    </View>
-  );
-};
-/* ================= kpi card ================= */
+      {/* FEATURES */}
+      <View style={styles.featureContainer}>
+        <FeatureCard title="Live Classes" theme={theme} />
+        <FeatureCard title="Recorded Classes" theme={theme} />
+        <FeatureCard title="Assignments" theme={theme} />
+        <FeatureCard title="Skill Tracking" theme={theme} />
+      </View>
 
-const KpiCard = ({ icon, value, label, colors,onPress }) => (
-  <LinearGradient
-    colors={colors}
-    start={{ x: 0, y: 0 }}
-    end={{ x: 1, y: 1 }}
-    style={styles.kpiCard}
-  >
-    <View style={styles.kpiIconWrap}>
-      <Ionicons name={icon} size={20} color="#fff" />
-    </View>
+      <SectionTitle title="How It Works" theme={theme} />
 
-    <Text style={styles.kpiValue}>{value}</Text>
-    <Text style={styles.kpiLabel}>{label}</Text>
-  </LinearGradient>
-);
+      <View style={styles.howContainer}>
+        <Step number="1" text="Register" theme={theme} />
+        <Step number="2" text="Join Live Class" theme={theme} />
+        <Step number="3" text="Complete Assignments" theme={theme} />
+        <Step number="4" text="Get Certificate" theme={theme} />
+      </View>
 
+      <SectionTitle title="Popular Courses" theme={theme} />
 
-/* ================= ROTATING AVATAR ================= */
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+<CourseCard
+  title="React"
+  price="$99"
+  img="https://reactjs.org/logo-og.png"
+  theme={theme}
+  onEnroll={onEnrollCourse}
+/>
+<CourseCard
+  title="Laravel"
+  price="$120"
+  img="https://download.logo.wine/logo/Laravel/Laravel-Logo.wine.png"
+  theme={theme}
+  onEnroll={onEnrollCourse}
+/>
 
-const RotatingAvatar = () => {
-  const spin = useRef(new Animated.Value(0)).current;
+<CourseCard
+  title="PHP"
+  price="$80"
+  img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjhQ9s532rngunSSNEyZ5w9qzx9Pf090ISCQ&s"
+  theme={theme}
+  onEnroll={onEnrollCourse}
+/>
 
-  useEffect(() => {
-    Animated.loop(
-      Animated.timing(spin, {
-        toValue: 1,
-        duration: 4500,
-        easing: Easing.linear,
-        useNativeDriver: false, // <- change here
-      })
-    ).start();
-  }, []);
-
-  const rotate = spin.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0deg", "360deg"],
-  });
-
-  return (
-    <View style={styles.avatarOuter}>
-      <Animated.View style={[styles.ring, { transform: [{ rotate }] }]}>
-        <LinearGradient
-          colors={["#8b5cf6", "#22d3ee", "#8b5cf6"]}
-          style={styles.ringGradient}
-        />
-      </Animated.View>
-
-      <Image
-        source={{ uri: "https://s1.dmcdn.net/u/B0lsg1dzxtqSvSrIj/240x240" }}
-        style={styles.avatarImage}
-      />
-    </View>
-  );
-};
-
-/* ================= MAIN SCREEN ================= */
-
-export default function StudentDashboardMerged({ setScreen, user }) {
-
-
-  // fab start 
-    <StudentFab setScreen={setScreen} />
-// end fab 
-
-
-  const sliderData = [
-    { id: "1", subject: "Data Structures", date: "Thu 11:00 AM" },
-    { id: "2", subject: "OS", date: "Fri 9:30 AM" },
-    { id: "3", subject: "DBMS", date: "Mon 10:15 AM" }
-  ];
-
-  const flatRef = useRef();
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const t = setInterval(() => {
-      const next = (index + 1) % sliderData.length;
-      flatRef.current?.scrollToIndex({ index: next, animated: true });
-      setIndex(next);
-    }, 3000);
-    return () => clearInterval(t);
-  }, [index]);
-
-
-  /* ===== Subjects Progress Data ===== */
-  const subjects = [
-    { name: "Machine Learning", progress: 85 },
-    { name: "Software", progress: 70 },
-    { name: "NLP", progress: 65 },
-  ];
-
-  return (
-    <View style={{ flex: 1, backgroundColor: "#020617" }}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-
-        {/* ===== HERO ===== */}
-
-        <LinearGradient
-          colors={["#0f172a", "#1e293b", "#312e81"]}
-          style={styles.herocard}
-        >
-
-          <View style={styles.headerRow}>
-            <Text style={styles.logo}>{user?.fname} {user?.lname}</Text>
-
-
-
-          </View>
-
-          <View style={styles.bodyRow}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.heading}>
-                You can start your{"\n"}test here
-              </Text>
-
-              <Text style={styles.sub}>
-                Create your own Test, keep{"\n"}
-                practicing & stay on top{"\n"}
-                for your next exam
-              </Text>
-            </View>
-
-            <RotatingAvatar />
-          </View>
-
-          <View style={styles.topBlob} />
-          <View style={styles.leftBlob} />
-          <View style={styles.bottomCurve} />
-
-        </LinearGradient>
-
-        {/* ===== KPI ===== */}
-
-<ScrollView
-  horizontal
-  showsHorizontalScrollIndicator={false}
-  style={{ marginTop: 14 }}
-  contentContainerStyle={{ paddingHorizontal: 12 }}
->
-  <KpiCard icon="calendar-outline" value="92%" label="Attendance" colors={["#6366f1","#8b5cf6"]} />
-  <TouchableOpacity onPress={() => setScreen("notice")}>
-  <KpiCard icon="megaphone-outline" value="10" label="Notice" colors={["#ef4444", "#fb7185"]} />
-</TouchableOpacity>
-
-  <KpiCard icon="clipboard-outline" value="4" label="Assignments" colors={["#06b6d4","#22d3ee"]} />
-  <KpiCard icon="create-outline" value="7" label="Quiz" colors={["#f59e0b","#facc15"]} />
-  <KpiCard icon="card-outline" value="₹12K" label="Fees" colors={["#10b981","#34d399"]} />
-</ScrollView>
-
-
-        {/* ===== SLIDER ===== */}
-
-        <FlatList
-          ref={flatRef}
-          data={sliderData}
-          horizontal
-          pagingEnabled
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={i => i.id}
-          renderItem={({ item }) => (
-            <LinearGradient colors={["#1e293b", "#0f172a"]} style={[styles.classCard, { width: width - 30 }]}>
-              <View style={{ flex: 1 }}>
-                <Text style={{ color: "#94a3b8" }}>Next Class</Text>
-                <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>{item.subject}</Text>
-                <Text style={{ color: "#c7d2fe" }}>{item.date}</Text>
-              </View>
-
-              <Image
-                source={{ uri: "https://cdn-icons-png.flaticon.com/512/3135/3135755.png" }}
-                style={{ width: 90, height: 90 }}
-              />
-            </LinearGradient>
-          )}
-        />
-
-        {/* <View style={styles.progressCard}>
-  <Text style={{ color: "#fff", fontWeight: "700" }}>Today's Goal</Text>
-  <View style={styles.progressCircle}>
-    <Text style={styles.progressText}>75%</Text>
-  </View>
-</View> */}
-
-        {/* ===== SUBJECTS PROGRESS ===== */}
-        <View style={{ margin: 15 }}>
-          <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold", marginBottom: 20 }}>
-            Subjects Progress
-          </Text>
-
-          <View style={{ flexDirection: "row", justifyContent: "space-around", marginVertical: 20 }}>
-            {subjects.map((s) => (
-              <MultiColorProgress key={s.name} progress={s.progress} subject={s.name} />
-            ))}
-          </View>
-        </View>
-
-        {/* ===== CHART ===== */}
-
-        <Text style={styles.section}>Performance Trend</Text>
-
-        <LineChart
-          data={{
-            labels: ["W1", "W2", "W3", "W4", "W5"],
-            datasets: [{ data: [70, 78, 75, 88, 92] }]
-          }}
-          width={width - 30}
-          height={220}
-          chartConfig={{
-            backgroundGradientFrom: "#020617",
-            backgroundGradientTo: "#020617",
-            color: (o = 1) => `rgba(139,92,246,${o})`,
-            labelColor: () => "#94a3b8"
-          }}
-          style={{ borderRadius: 20, alignSelf: "center" }}
-        />
-
-        {/* ===== CONTROL GRID ===== */}
-
-        <Text style={styles.section}>Control Panel</Text>
-
-        <View style={styles.grid}>
-          <Tile icon="book" title="Subjects" onPress={() => setScreen("subject")}/>
-          <Tile icon="clipboard" title="Assignments" onPress={() => setScreen("assignment")}/>
-          <Tile icon="card" title="Fees" onPress={() => setScreen("fees")}/>
-          <Tile icon="stats-chart" title="Results" onPress={() => setScreen("semesterResult")}/>
-        </View>
-
-        <View style={{ height: 120 }} />
+<CourseCard
+  title="JavaScript"
+  price="$95"
+  img="https://www.macworld.com/wp-content/uploads/2023/01/learn_javascript_on_mac.jpg"
+  theme={theme}
+  onEnroll={onEnrollCourse}
+/>
       </ScrollView>
 
-{/* ===== FAB MENU BUTTONS ===== */}
-    <StudentFab setScreen={setScreen} />
+      <SectionTitle title="Our Mentors" theme={theme} />
 
+      <View style={styles.mentorContainer}>
+        <MentorCard
+          name="John Smith"
+          role="Full Stack Developer"
+          theme={theme}
+        />
+        <MentorCard
+          name="Emily Williams"
+          role="Frontend Expert"
+          theme={theme}
+        />
+      </View>
 
-    </View>
+      <SectionTitle title="Student Testimonials" theme={theme} />
+
+      <View style={[styles.testimonial, { backgroundColor: theme.card }]}>
+        <Text style={{ color: theme.text }}>
+          Great platform! Learned React easily.
+        </Text>
+        <Text
+          style={{
+            marginTop: 10,
+            fontWeight: "bold",
+            color: theme.text,
+          }}
+        >
+          - Roc Cruz
+        </Text>
+      </View>
+
+      <View style={styles.footer}>
+        <Text style={{ color: theme.text }}>
+          About   Contact   Privacy   Terms
+        </Text>
+      </View>
+    </ScrollView>
   );
 }
 
-/* ================= SMALL COMPONENTS ================= */
+/* COMPONENTS */
 
-const Stat = ({ icon, value, label }) => (
-  <View style={styles.stat}>
-    <Ionicons name={icon} size={22} color="#8b5cf6" />
-    <Text style={styles.statV}>{value}</Text>
-    <Text style={styles.statL}>{label}</Text>
+const FeatureCard = ({ title, theme }) => (
+  <View style={[styles.featureCard, { backgroundColor: theme.card }]}>
+    <Text style={{ color: theme.text }}>{title}</Text>
   </View>
 );
 
-const Tile = ({ icon, title, onPress }) => (
-  <TouchableOpacity style={styles.tile} onPress={onPress}>
-    <Ionicons name={icon} size={26} color="#a78bfa" />
-    <Text style={{ color: "#fff", fontWeight: "700", marginTop: 8 }}>{title}</Text>
-  </TouchableOpacity>
+const Step = ({ number, text, theme }) => (
+  <View style={styles.step}>
+    <View
+      style={[styles.stepCircle, { backgroundColor: theme.primary }]}
+    >
+      <Text style={{ color: "#fff" }}>{number}</Text>
+    </View>
+    <Text style={{ color: theme.text }}>{text}</Text>
+  </View>
 );
 
+const CourseCard = ({ title, price, img, theme, onEnroll }) => (
+  <View style={[styles.courseCard, { backgroundColor: theme.card }]}>
+    <Image source={{ uri: img }} style={styles.courseImage} />
+    <Text style={{ color: theme.text, fontWeight: "bold" }}>
+      {title}
+    </Text>
+    <Text style={{ color: theme.primary }}>{price}</Text>
 
-/* ================= STYLES ================= */
+<TouchableOpacity
+  style={[
+    styles.enrollBtn,
+    { backgroundColor: theme.primary },
+  ]}
+  onPress={() => onEnroll({ title, price, img })}
+>
+      <Text style={{ color: "#fff" }}>Enroll Now</Text>
+    </TouchableOpacity>
+  </View>
+);
+
+const MentorCard = ({ name, role, theme }) => (
+  <View style={[styles.mentorCard, { backgroundColor: theme.card }]}>
+    <Text style={{ color: theme.text, fontWeight: "bold" }}>
+      {name}
+    </Text>
+    <Text style={{ color: theme.subText }}>{role}</Text>
+  </View>
+);
+
+const SectionTitle = ({ title, theme }) => (
+  <Text style={[styles.sectionTitle, { color: theme.text }]}>
+    {title}
+  </Text>
+);
+
+/* THEMES */
+
+const darkTheme = {
+  bg: "#000",
+  text: "#fff",
+  subText: "#ccc",
+  primary: "#3b82f6",
+  card: "#111",
+};
+
+const lightTheme = {
+  bg: "#fff",
+  text: "#000",
+  subText: "#555",
+  primary: "#2563eb",
+  card: "#f3f4f6",
+};
+
+/* STYLES */
 
 const styles = StyleSheet.create({
+  container: { flex: 1 },
 
-  /* ================= NEW STYLES + IMPROVEMENTS ================= */
-
-  // Hero Card
-  herocard: {
-    borderRadius: 28,
-    padding: 18,
-    paddingTop: 40,
-    overflow: "hidden",
+  header: {
+    padding: 20,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
   },
 
-  headerRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginBottom: 12 },
-
-  logo: { fontWeight: "700", fontSize: 20, color: "#fff" },
-
-  bodyRow: { flexDirection: "row", alignItems: "center" },
-
-  heading: { fontSize: 16, fontWeight: "800", color: "#c7d2fe", lineHeight: 22 },
-
-  sub: { marginTop: 8, fontSize: 12, color: "#c7d2fe", lineHeight: 18 },
-
-  // Rotating Avatar
-  avatarOuter: { width: 140, height: 140, borderRadius: 70, justifyContent: "center", alignItems: "center", zIndex: 2 },
-
-  ring: { position: "absolute", width: 140, height: 140, borderRadius: 70 },
-
-  ringGradient: { flex: 1, borderRadius: 70 },
-
-  avatarImage: { width: 110, height: 110, borderRadius: 55, backgroundColor: "#fff", padding: 6, elevation: 8 },
-
-
-  topBlob: { position: "absolute", top: -20, right: -10, width: 120, height: 80, borderRadius: 40, backgroundColor: "rgba(255,255,255,0.25)", transform: [{ rotate: "25deg" }] },
-
-  leftBlob: { position: "absolute", top: -15, left: -15, width: 100, height: 100, borderRadius: 50, backgroundColor: "rgba(255,255,255,0.25)" },
-
-  bottomCurve: { position: "absolute", left: -50, bottom: -60, width: 240, height: 140, borderRadius: 120, backgroundColor: "rgba(255,255,255,0.15)" },
-
-  section: { color: "#e5e7eb", fontSize: 18, fontWeight: "bold", margin: 15 },
-
-  stat: { width: 140, marginLeft: 15, marginTop: 10, padding: 16, borderRadius: 20, backgroundColor: "rgba(255,255,255,0.06)" },
-
-  statV: { color: "#fff", fontSize: 18, fontWeight: "bold", marginTop: 6 },
-
-  statL: { color: "#c7d2fe", fontSize: 12 },
-
-  classCard: { margin: 15, padding: 18, borderRadius: 22, flexDirection: "row", alignItems: "center" },
-
-  grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", padding: 15 },
-
-  tile: { width: "48%", backgroundColor: "#111827", borderRadius: 20, padding: 18, marginBottom: 14 },
-
-  fab: { position: "absolute", right: 20, bottom: 30, width: 60, height: 60, borderRadius: 30, backgroundColor: "#8b5cf6", justifyContent: "center", alignItems: "center" },
-
-  fabExtra: {
-  position: "absolute",
-  right: 20,
-  bottom: 20,
-  transformOrigin: "bottom",
-},
-
-
-  fabSmall: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: "#8b5cf6",
-    justifyContent: "center",
-    alignItems: "center",
-    marginBottom: 10,
-    shadowColor: "#000",
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-    elevation: 5,
+  toggleBtn: {
+    position: "absolute",
+    right: 20,
+    top: 20,
   },
 
-  // New progress card
-  progressCard: {
-    margin: 15,
+  headerTitle: { fontSize: 18 },
+  headerBig: { fontSize: 26, fontWeight: "bold", marginVertical: 5 },
+  headerDesc: { fontSize: 14, marginBottom: 15 },
+
+  headerButtons: { flexDirection: "row" },
+
+  joinBtn: {
+    padding: 10,
     borderRadius: 20,
-    padding: 18,
-    backgroundColor: "rgba(139,92,246,0.15)",
+    marginRight: 10,
+  },
+
+  startBtn: {
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 20,
+  },
+
+  featureContainer: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    marginTop: 20,
   },
 
-  progressCircle: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    borderWidth: 6,
-    borderColor: "#8b5cf6",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  progressText: { color: "#fff", fontWeight: "700", fontSize: 16 },
-
-  notificationCard: {
-    marginHorizontal: 15,
-    marginBottom: 10,
+  featureCard: {
+    width: "45%",
     padding: 15,
-    borderRadius: 16,
-    backgroundColor: "linear-gradient(45deg, #8b5cf6, #22d3ee)",
+    borderRadius: 15,
+    marginBottom: 15,
+    alignItems: "center",
   },
-  center: {
+
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    margin: 20,
+  },
+
+  howContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+  },
+
+  step: {
+    alignItems: "center",
+    width: "40%",
+    marginBottom: 15,
+  },
+
+  stepCircle: {
+    width: 35,
+    height: 35,
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
   },
-  progressText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 16,
+
+  courseCard: {
+    width: 200,
+    borderRadius: 15,
+    padding: 15,
+    marginLeft: 15,
   },
 
-  center: {
-    justifyContent: "center",
+  courseImage: {
+    height: 100,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+
+  enrollBtn: {
+    padding: 8,
+    borderRadius: 15,
     alignItems: "center",
-  },
-  progressText: {
-    color: "#fff",
-    fontWeight: "700",
-    fontSize: 16,
+    marginTop: 10,
   },
 
-  // kpi cart 
-  kpiCard: {
-  width: 140,
-  marginRight: 14,
-  padding: 16,
-  borderRadius: 22,
-  shadowColor: "#000",
-  shadowOpacity: 0.35,
-  shadowRadius: 10,
-  elevation: 8,
-},
+  mentorContainer: { paddingHorizontal: 20 },
 
-kpiIconWrap: {
-  width: 36,
-  height: 36,
-  borderRadius: 18,
-  backgroundColor: "rgba(255,255,255,0.25)",
-  justifyContent: "center",
-  alignItems: "center",
-  marginBottom: 10,
-},
+  mentorCard: {
+    padding: 15,
+    borderRadius: 15,
+    marginBottom: 15,
+  },
 
-kpiValue: {
-  color: "#fff",
-  fontSize: 22,
-  fontWeight: "800",
-},
+  testimonial: {
+    margin: 20,
+    padding: 15,
+    borderRadius: 15,
+  },
 
-kpiLabel: {
-  color: "rgba(255,255,255,0.85)",
-  fontSize: 13,
-  marginTop: 4,
-},
-
+  footer: {
+    alignItems: "center",
+    padding: 20,
+  },
 });

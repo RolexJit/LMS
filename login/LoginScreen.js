@@ -89,7 +89,7 @@ export default function LoginScreen({ onLoginSuccess }) {
           )}
         </TouchableOpacity>
       </View> */}
-      <TouchableOpacity 
+      {/* <TouchableOpacity 
   style={[styles.btn, { marginTop: 10, backgroundColor: "#28a745" }]}
   onPress={() => handleLogin("admin@gmail.com", "1234")}
   disabled={loading}
@@ -99,8 +99,8 @@ export default function LoginScreen({ onLoginSuccess }) {
           ) : (
   <Text style={styles.btnText}>Login as Admin</Text>
           )}
-</TouchableOpacity>
-<TouchableOpacity 
+</TouchableOpacity> */}
+{/* <TouchableOpacity 
   style={[styles.btn, { marginTop: 10, backgroundColor: "#4e1a47" }]}
   onPress={() => handleLogin("pratik@gmail.com", "2222")}
   disabled={loading}
@@ -110,7 +110,7 @@ export default function LoginScreen({ onLoginSuccess }) {
           ) : (
   <Text style={styles.btnText}>Login as Teacher</Text>
           )}
-</TouchableOpacity>
+</TouchableOpacity> */}
 <TouchableOpacity 
   style={[styles.btn, { marginTop: 10, backgroundColor: "#0b3d91" }]}
   onPress={() => handleLogin("puja@gmail.com", "9999")}

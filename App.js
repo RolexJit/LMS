@@ -1,10 +1,21 @@
 import { useState } from "react";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import StudentDashboard from "./student/StudentDashboard";
 import QuizDashboard from "./student/QuizDashboard";
 import QuizScreen from "./student/QuizScreen";
 import ResultScreen from "./student/ResultScreen";
 import StudentChat from "./student/StudentChat";
+import CourseDetail from "./student/CourseDetail";
+import LaraCourseDetails from "./student/LaraCourseDetails";
+import PhpCourseDetails from "./student/PhpCourseDetails";
+import JavaCourseDetails from "./student/JavaCourseDetails";
+import VideoTutorial from "./student/VideoTutorial";
+
+
+
+
 
 import StudentSubjectReview from "./student/StudentSubjectReview";
 
@@ -20,11 +31,15 @@ import LoginScreen from "./login/LoginScreen";
 import AdminDashboardScreen from "./admin/AdminDashboardScreen";
 import TeacherDashboard from "./teacher/TeacherDashboard";
 import StudyMaterials from "./teacher/study/StudyMaterials";
+const Stack = createNativeStackNavigator();
+
 
 
 
 export default function App() {
+  
   const [user, setUser] = useState(null);
+  const [selectedCourse, setSelectedCourse] = useState(null);
 
   const [screen, setScreen] = useState("home");
   const [category, setCategory] = useState("HTML");
@@ -43,30 +58,31 @@ export default function App() {
     return <LoginScreen onLoginSuccess={setUser} />;
   }
 
-  if (user.role_id === 2) {
-    return (
-    <AdminDashboardScreen
-      user={user}
-      scores={scores}
-      onLogout={() => setUser(null)}
-    />
-  );
-  }
+  // if (user.role_id === 2) {
+  //   return (
+  //   <AdminDashboardScreen
+  //     user={user}
+  //     scores={scores}
+  //     onLogout={() => setUser(null)}
+  //   />
+  // );
+  // }
 
-  if (user.role_id === 1) {
-    return (
-    <TeacherDashboard
-  user={user}
-  onLogout={() => setUser(null)}
-  setScreen={setScreen}
-/>
-);
-  }
+//   if (user.role_id === 1) {
+//     return (
+//     <TeacherDashboard
+//   user={user}
+//   onLogout={() => setUser(null)}
+//   setScreen={setScreen}
+// />
+// );
+//   }
 
   /* ===== STUDENT FLOW ===== */
 
   return (
     <>
+   
       {/* HOME */}
       {screen === "home" && (
         <StudentDashboard
@@ -74,11 +90,58 @@ export default function App() {
           scores={scores}
           setScreen={setScreen}
 
+onEnrollCourse={(course) => {
+  setSelectedCourse(course);
+
+  if (course.title === "React") {
+    setScreen("courseDetail");
+  } 
+  else if (course.title === "Laravel") {
+    setScreen("LaraCourseDetails");
+  } 
+  else if (course.title === "PHP") {
+    setScreen("PhpCourseDetails");
+  } 
+  else if (course.title === "JavaScript") {
+    setScreen("JavaCourseDetails");
+  }
+}}
+
           onOpenProfile={() => setScreen("profile")}
           onOpenAttendance={() => setScreen("attendance")}
         />
       )}
+      {/* COURSE DETAIL */}
+{screen === "courseDetail" && selectedCourse && (
+  <CourseDetail
+    course={selectedCourse}
+     setScreen={setScreen}
+    onBack={() => setScreen("home")}
+  />
+)}
 
+{screen === "videoTutorial" && (
+  <VideoTutorial onBack={() => setScreen("courseDetail")} />
+)}
+
+{screen === "LaraCourseDetails" && selectedCourse && (
+  <LaraCourseDetails
+    course={selectedCourse}
+    onBack={() => setScreen("home")}
+  />
+)}
+{screen === "PhpCourseDetails" && selectedCourse && (
+  <PhpCourseDetails
+    course={selectedCourse}
+    onBack={() => setScreen("home")}
+  />
+)}
+{screen === "JavaCourseDetails" && selectedCourse && (
+  <JavaCourseDetails
+    course={selectedCourse}
+    onBack={() => setScreen("home")}
+  />
+)}
       {/* PROFILE */}
       {screen === "profile" && (
         <StudentProfile
@@ -130,7 +193,7 @@ export default function App() {
       {screen === "subject" && (
         <SubjectScreen onBack={() => setScreen("home")} />
       )}
-      {/* ✅ QUIZ DASHBOARD (NEW STEP) */}
+      {/* QUIZ DASHBOARD (NEW STEP) */}
       {screen === "quizDashboard" && (
         <QuizDashboard
           user={user}
@@ -145,24 +208,10 @@ export default function App() {
         />
       )}
 
-      {/* QUIZ */}
-      {screen === "quiz" && (
-        <QuizScreen
-          key={category}
-          category={category}
-          onFinish={(finalScore) => {
-            setScores((prev) => ({
-              ...prev,
-              [category]: finalScore,
-            }));
-            setScreen("result");
-          }}
-          onQuit={() => setScreen("quizDashboard")}
-        />
-      )}
+     
 
       {/* RESULT */}
-      {screen === "result" && (
+       {screen === "result" && (
         <ResultScreen
           score={scores[category]}
           category={category}

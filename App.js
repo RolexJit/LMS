@@ -90,21 +90,25 @@ export default function App() {
           scores={scores}
           setScreen={setScreen}
 
-onEnrollCourse={(course) => {
-  setSelectedCourse(course);
+// onEnrollCourse={(course) => {
+//   setSelectedCourse(course);
 
-  if (course.title === "React") {
-    setScreen("courseDetail");
-  } 
-  else if (course.title === "Laravel") {
-    setScreen("LaraCourseDetails");
-  } 
-  else if (course.title === "PHP") {
-    setScreen("PhpCourseDetails");
-  } 
-  else if (course.title === "JavaScript") {
-    setScreen("JavaCourseDetails");
-  }
+//   if (course.title === "React") {
+//     setScreen("courseDetail");
+//   } 
+//   else if (course.title === "Laravel") {
+//     setScreen("LaraCourseDetails");
+//   } 
+//   else if (course.title === "PHP") {
+//     setScreen("PhpCourseDetails");
+//   } 
+//   else if (course.title === "JavaScript") {
+//     setScreen("JavaCourseDetails");
+//   }
+// }}   
+  onEnrollCourse={(course) => {
+  setSelectedCourse(course);
+  setScreen("courseDetail");
 }}
 
           onOpenProfile={() => setScreen("profile")}

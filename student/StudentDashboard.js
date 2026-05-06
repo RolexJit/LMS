@@ -131,14 +131,13 @@ useEffect(() => {
     <Text style={{ color: theme.text }}>Loading...</Text>
   ) : (
     courses.map((course, index) => (
-      <CourseCard
-        key={index}
-        title={course.name}
-        price={course.price || "Free"}
-        img={course.image}
-        theme={theme}
-        onEnroll={onEnrollCourse}
-      />
+
+<CourseCard
+  key={index}
+  course={course}
+  theme={theme}
+  onEnroll={onEnrollCourse}
+/>
     ))
   )}
 </ScrollView>
@@ -203,25 +202,35 @@ const Step = ({ number, text, theme }) => (
   </View>
 );
 
-const CourseCard = ({ title, price, img, theme, onEnroll }) => (
+const CourseCard = ({ course, theme, onEnroll }) => (
   <View style={[styles.courseCard, { backgroundColor: theme.card }]}>
-    <Image source={{ uri: img }} style={styles.courseImage} />
-    <Text style={{ color: theme.text, fontWeight: "bold" }}>
-      {title}
-    </Text>
-    <Text style={{ color: theme.primary }}>{price}</Text>
+    
+    <Image
+      source={{ uri: course.image }}
+      style={styles.courseImage}
+    />
 
-<TouchableOpacity
-  style={[
-    styles.enrollBtn,
-    { backgroundColor: theme.primary },
-  ]}
-  onPress={() => onEnroll({ title, price, img })}
->
+    <Text style={{ color: theme.text, fontWeight: "bold" }}>
+      {course.name}
+    </Text>
+
+    <Text style={{ color: theme.primary }}>
+      Free
+    </Text>
+
+    <TouchableOpacity
+      style={[
+        styles.enrollBtn,
+        { backgroundColor: theme.primary },
+      ]}
+      onPress={() => onEnroll(course)}   // ✅ FIXED
+    >
       <Text style={{ color: "#fff" }}>Enroll Now</Text>
     </TouchableOpacity>
+
   </View>
 );
+
 
 const MentorCard = ({ name, role, theme }) => (
   <View style={[styles.mentorCard, { backgroundColor: theme.card }]}>

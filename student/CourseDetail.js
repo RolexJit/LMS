@@ -14,7 +14,6 @@ const Card = ({ children, style }) => (
   <View style={[styles.card, style]}>{children}</View>
 );
 
-// export default function CourseDetail({ onBack }) {
 export default function CourseDetail({ course, onBack, setScreen }) {
   return (
     <LinearGradient
@@ -23,31 +22,39 @@ export default function CourseDetail({ course, onBack, setScreen }) {
     >
       <SafeAreaView style={{ flex: 1 }}>
         
-        {/* Header */}
+        {/* HEADER */}
         <View style={styles.header}>
           <TouchableOpacity onPress={onBack}>
             <Ionicons name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
 
-          <Text style={styles.headerTitle}>{course.title}</Text>
+          {/* ✅ FIXED */}
+          <Text style={styles.headerTitle}>
+            {course?.name || "Course"}
+          </Text>
 
           <Ionicons name="logo-react" size={26} color="#38bdf8" />
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false}>
           
-          {/* Banner */}
+          {/* BANNER */}
           <Card style={styles.banner}>
             <Ionicons name="logo-react" size={40} color="#38bdf8" />
             <View style={{ marginLeft: 12 }}>
-              <Text style={styles.bannerTitle}>{course.title} Course</Text>
+              
+              {/* ✅ FIXED */}
+              <Text style={styles.bannerTitle}>
+                {course?.name || "Course"} Course
+              </Text>
+
               <Text style={styles.bannerSubtitle}>
                 Build modern UI apps
               </Text>
             </View>
           </Card>
 
-          {/* Progress */}
+          {/* PROGRESS */}
           <Text style={styles.sectionTitle}>Progress</Text>
 
           <Card>
@@ -60,7 +67,7 @@ export default function CourseDetail({ course, onBack, setScreen }) {
             <Text style={styles.progressSub}>12 / 18 Lessons</Text>
           </Card>
 
-          {/* Next Lesson */}
+          {/* NEXT LESSON */}
           <Text style={styles.sectionTitle}>Next Lesson</Text>
 
           <Card style={styles.rowBetween}>
@@ -74,7 +81,7 @@ export default function CourseDetail({ course, onBack, setScreen }) {
             </TouchableOpacity>
           </Card>
 
-          {/* Practice */}
+          {/* PRACTICE */}
           <Text style={styles.sectionTitle}>Practice</Text>
 
           <View style={styles.row}>
@@ -97,18 +104,20 @@ export default function CourseDetail({ course, onBack, setScreen }) {
             </Card>
           </View>
 
-          {/* Resources */}
+          {/* RESOURCES */}
           <Text style={styles.sectionTitle}>Resources</Text>
 
           <Card>
             <Text style={styles.listItem}>📘 Study Notes</Text>
+
             <TouchableOpacity onPress={() => setScreen("videoTutorial")}>
-  <Text style={styles.listItem}>🎥 Video Tutorials</Text>
-</TouchableOpacity>
+              <Text style={styles.listItem}>🎥 Video Tutorials</Text>
+            </TouchableOpacity>
+
             <Text style={styles.listItem}>📄 Documentation</Text>
           </Card>
 
-          {/* Activity */}
+          {/* ACTIVITY */}
           <Text style={styles.sectionTitle}>Recent Activity</Text>
 
           <Card>
@@ -121,7 +130,7 @@ export default function CourseDetail({ course, onBack, setScreen }) {
           </Card>
         </ScrollView>
 
-        {/* Bottom Nav */}
+        {/* BOTTOM NAV */}
         <View style={styles.navbar}>
           <Ionicons name="home" size={26} color="#fff" />
           <Ionicons name="book" size={26} color="#38bdf8" />
@@ -135,9 +144,7 @@ export default function CourseDetail({ course, onBack, setScreen }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
+  container: { flex: 1 },
 
   header: {
     flexDirection: "row",

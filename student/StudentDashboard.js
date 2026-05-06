@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import {
   View,
   Text,
@@ -10,6 +10,36 @@ import {
 } from "react-native";
 
 export default function StudentDashboard({ onEnrollCourse }) {
+const [courses, setCourses] = useState([]);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch("https://api.tzweb.in/api/index", {
+        method: "GET",
+        headers: {
+          "x-api-key": "123456",
+          "Content-Type": "application/json"
+        }
+      });
+
+      const data = await response.json();
+      console.log("API DATA:", data);
+
+      setCourses(data.data || data); // adjust if needed
+      setLoading(false);
+
+    } catch (error) {
+      console.error("API Error:", error);
+    }
+  };
+
+  fetchCourses();
+}, []);
+
+
+
 
   const [darkMode, setDarkMode] = useState(true);
   const theme = darkMode ? darkTheme : lightTheme;
@@ -96,38 +126,22 @@ export default function StudentDashboard({ onEnrollCourse }) {
 
       <SectionTitle title="Popular Courses" theme={theme} />
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-<CourseCard
-  title="React"
-  price="$99"
-  img="https://reactjs.org/logo-og.png"
-  theme={theme}
-  onEnroll={onEnrollCourse}
-/>
-<CourseCard
-  title="Laravel"
-  price="$120"
-  img="https://download.logo.wine/logo/Laravel/Laravel-Logo.wine.png"
-  theme={theme}
-  onEnroll={onEnrollCourse}
-/>
-
-<CourseCard
-  title="PHP"
-  price="$80"
-  img="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjhQ9s532rngunSSNEyZ5w9qzx9Pf090ISCQ&s"
-  theme={theme}
-  onEnroll={onEnrollCourse}
-/>
-
-<CourseCard
-  title="JavaScript"
-  price="$95"
-  img="https://www.macworld.com/wp-content/uploads/2023/01/learn_javascript_on_mac.jpg"
-  theme={theme}
-  onEnroll={onEnrollCourse}
-/>
-      </ScrollView>
+<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+  {loading ? (
+    <Text style={{ color: theme.text }}>Loading...</Text>
+  ) : (
+    courses.map((course, index) => (
+      <CourseCard
+        key={index}
+        title={course.name}
+        price={course.price || "Free"}
+        img={course.image}
+        theme={theme}
+        onEnroll={onEnrollCourse}
+      />
+    ))
+  )}
+</ScrollView>
 
       <SectionTitle title="Our Mentors" theme={theme} />
 

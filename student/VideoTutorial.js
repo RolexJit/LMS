@@ -11,25 +11,11 @@ import {
 
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
-import {
-  VideoView,
-  useVideoPlayer,
-} from "expo-video";
-
+import { Video, ResizeMode } from "expo-av";
 export default function VideoTutorial({
   onBack,
   videoData,
 }) {
-
-  // =========================
-  // VIDEO PLAYER
-  // =========================
-const player = useVideoPlayer(
-  videoData?.video || null,
-    (playerInstance) => {
-      playerInstance.play();
-    }
-  );
 
   // =========================
   // DEFAULT VIDEOS
@@ -66,6 +52,7 @@ const player = useVideoPlayer(
         "https://www.youtube.com/embed/VCiFH3U3g34",
     },
   ];
+  console.log(videoData);
 
   return (
     <View style={styles.container}>
@@ -119,27 +106,34 @@ const player = useVideoPlayer(
   {videoData ? (
     <>
 
-      {videoData.video?.endsWith(".mp4") ? (
+{videoData?.video?.includes(".mp4") ? (
 
-        <VideoView
-          player={player}
-          style={styles.featureImage}
-          allowsFullscreen
-          allowsPictureInPicture
-        />
+<Video
+  source={{
+    uri: videoData.video,
+  }}
+  style={styles.featureImage}
+  useNativeControls={true}
+  resizeMode={ResizeMode.CONTAIN}
+  shouldPlay={true}
+  isLooping={false}
+    posterSource={{
+    uri: "https://img.youtube.com/vi/bMknfKXIFA8/maxresdefault.jpg",
+  }}
+/>
 
-      ) : (
+) : (
 
-        <WebView
-          source={{
-            uri: videoData.video,
-          }}
-          style={styles.featureImage}
-          javaScriptEnabled
-          domStorageEnabled
-        />
+  <WebView
+    source={{
+      uri: videoData.video,
+    }}
+    style={styles.featureImage}
+    javaScriptEnabled
+    domStorageEnabled
+  />
 
-      )}
+)}
 
       <Text style={styles.playingTitle}>
         ▶ Now Playing: {videoData.title}

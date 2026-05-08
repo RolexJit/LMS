@@ -129,7 +129,7 @@ export default function StudentDashboard({ onEnrollCourse }) {
           <TouchableOpacity
             style={[
               styles.toggleBtn,
-              { backgroundColor: theme.card },
+              { backgroundColor: theme.card,marginTop:25 },
             ]}
             onPress={() =>
               setDarkMode(!darkMode)

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -8,19 +8,32 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+
 import { Ionicons } from "@expo/vector-icons";
 import { WebView } from "react-native-webview";
-// import { Video } from "expo-av";
-import { VideoView, useVideoPlayer } from "expo-video";
-export default function VideoTutorial({ onBack }) {
-  const [selectedVideo, setSelectedVideo] = useState(null);
-  // const videoRef = useRef(null);
+import {
+  VideoView,
+  useVideoPlayer,
+} from "expo-video";
+
+export default function VideoTutorial({
+  onBack,
+  videoData,
+}) {
+
+  // =========================
+  // VIDEO PLAYER
+  // =========================
 const player = useVideoPlayer(
-  selectedVideo ? selectedVideo.videoUrl : null,
-  (playerInstance) => {
-    playerInstance.play(); // autoplay
-  }
-);
+  videoData?.video || null,
+    (playerInstance) => {
+      playerInstance.play();
+    }
+  );
+
+  // =========================
+  // DEFAULT VIDEOS
+  // =========================
   const videos = [
     {
       id: 1,
@@ -56,17 +69,29 @@ const player = useVideoPlayer(
 
   return (
     <View style={styles.container}>
-      
+
       {/* HEADER */}
       <View style={styles.header}>
+
         <TouchableOpacity onPress={onBack}>
-          <Ionicons name="arrow-back" size={24} color="#fff" />
+          <Ionicons
+            name="arrow-back"
+            size={24}
+            color="#fff"
+          />
         </TouchableOpacity>
 
-        <Text style={styles.headerTitle}>Video Tutorials</Text>
+        <Text style={styles.headerTitle}>
+          Video Tutorials
+        </Text>
 
         <View style={styles.headerIcons}>
-          <Ionicons name="search" size={22} color="#fff" />
+          <Ionicons
+            name="search"
+            size={22}
+            color="#fff"
+          />
+
           <Ionicons
             name="notifications"
             size={22}
@@ -74,9 +99,12 @@ const player = useVideoPlayer(
             style={{ marginLeft: 10 }}
           />
         </View>
+
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+      >
 
         {/* SEARCH */}
         <TextInput
@@ -87,75 +115,140 @@ const player = useVideoPlayer(
 
         {/* VIDEO PLAYER */}
 <View style={styles.featureCard}>
-  {selectedVideo ? (
+
+  {videoData ? (
     <>
-      {selectedVideo.videoUrl.endsWith(".mp4") ? (
-        // ✅ MP4 Video
+
+      {videoData.video?.endsWith(".mp4") ? (
+
         <VideoView
           player={player}
           style={styles.featureImage}
-          fullscreenOptions={{ enable: true }}
+          allowsFullscreen
+          allowsPictureInPicture
         />
+
       ) : (
-        // ✅ YouTube Video
+
         <WebView
-          source={{ uri: selectedVideo.videoUrl }}
+          source={{
+            uri: videoData.video,
+          }}
           style={styles.featureImage}
           javaScriptEnabled
           domStorageEnabled
         />
+
       )}
 
       <Text style={styles.playingTitle}>
-        ▶ Now Playing: {selectedVideo.title}
+        ▶ Now Playing: {videoData.title}
       </Text>
+
     </>
   ) : (
     <>
       <Image
         source={{
-          uri: "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
+          uri:
+            "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
         }}
         style={styles.featureImage}
       />
+
       <View style={styles.overlay}>
-        <Ionicons name="play-circle" size={70} color="#fff" />
+        <Ionicons
+          name="play-circle"
+          size={70}
+          color="#fff"
+        />
       </View>
+
+      <Text style={styles.emptyText}>
+        Select a lesson to start watching
+      </Text>
     </>
   )}
+
 </View>
 
         {/* VIDEO LIST */}
+        <Text style={styles.sectionTitle}>
+          Recommended Videos
+        </Text>
+
         {videos.map((item) => (
-          <TouchableOpacity
+
+          <View
             key={item.id}
             style={styles.videoCard}
-            onPress={() => setSelectedVideo(item)}
           >
-            <Image source={{ uri: item.thumbnail }} style={styles.thumbnail} />
+
+            <Image
+              source={{
+                uri: item.thumbnail,
+              }}
+              style={styles.thumbnail}
+            />
 
             <View style={styles.videoInfo}>
-              <Text style={styles.videoTitle} numberOfLines={2}>
+
+              <Text
+                style={styles.videoTitle}
+                numberOfLines={2}
+              >
                 {item.title}
               </Text>
+
               <Text style={styles.videoMeta}>
                 {item.channel} • {item.views}
               </Text>
+
             </View>
 
-            <Ionicons name="play-circle" size={22} color="#7c4dff" />
-          </TouchableOpacity>
+            <Ionicons
+              name="play-circle"
+              size={24}
+              color="#7c4dff"
+            />
+
+          </View>
+
         ))}
+
+        <View style={{ height: 100 }} />
 
       </ScrollView>
 
       {/* BOTTOM NAV */}
       <View style={styles.bottomNav}>
-        <Ionicons name="home" size={24} color="#888" />
-        <Ionicons name="play-circle" size={26} color="#7c4dff" />
-        <Ionicons name="heart" size={24} color="#888" />
-        <Ionicons name="person" size={24} color="#888" />
+
+        <Ionicons
+          name="home"
+          size={24}
+          color="#888"
+        />
+
+        <Ionicons
+          name="play-circle"
+          size={26}
+          color="#7c4dff"
+        />
+
+        <Ionicons
+          name="heart"
+          size={24}
+          color="#888"
+        />
+
+        <Ionicons
+          name="person"
+          size={24}
+          color="#888"
+        />
+
       </View>
+
     </View>
   );
 }
@@ -172,6 +265,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 15,
+    marginBottom: 10,
   },
 
   headerTitle: {
@@ -196,26 +290,44 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
     borderRadius: 15,
     overflow: "hidden",
+    backgroundColor: "#111",
   },
 
   featureImage: {
     width: "100%",
-    height: 200,
+    height: 220,
+    backgroundColor: "#000",
   },
 
   playingTitle: {
     color: "#fff",
-    padding: 10,
+    padding: 12,
     fontWeight: "bold",
+    fontSize: 15,
+  },
+
+  emptyText: {
+    color: "#aaa",
+    textAlign: "center",
+    padding: 15,
   },
 
   overlay: {
     position: "absolute",
     width: "100%",
-    height: "100%",
+    height: 220,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "rgba(0,0,0,0.3)",
+  },
+
+  sectionTitle: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginHorizontal: 15,
+    marginTop: 20,
+    marginBottom: 15,
   },
 
   videoCard: {
@@ -223,6 +335,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 15,
     marginBottom: 15,
+    backgroundColor: "#111",
+    borderRadius: 12,
+    padding: 10,
   },
 
   thumbnail: {
@@ -255,5 +370,8 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: "#111",
     backgroundColor: "#000",
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
   },
 });

@@ -26,8 +26,8 @@ export default function CourseDetail({
   course,
   onBack,
   setScreen,
-  
-}) {
+  setVideoData,
+}) { 
 
   // =========================
   // CONTENT TOGGLE
@@ -40,6 +40,54 @@ export default function CourseDetail({
   // =========================
   const [openTopicId, setOpenTopicId] =
     useState(null);
+const [courseData, setCourseData] =
+  useState(null);
+
+const [loading, setLoading] =
+  useState(true);
+
+useEffect(() => {
+  if (course?.id) {
+    fetchCourseDetails();
+  }
+}, [course]);
+
+const fetchCourseDetails = async () => {
+  try {
+
+    const response = await fetch(
+      `https://api.tzweb.in/api/showtopics/${course.id}`,
+      {
+        method: "GET",
+        headers: {
+          "x-api-key": "123456",
+          "Content-Type":
+            "application/json",
+        },
+      }
+    );
+
+    const result =
+      await response.json();
+
+    console.log(
+      "COURSE DETAILS:",
+      result
+    );
+
+    if (result.status) {
+      setCourseData(result.data);
+    }
+
+    setLoading(false);
+
+  } catch (error) {
+
+    console.log(error);
+
+    setLoading(false);
+  }
+};
 
   return (
     <LinearGradient
@@ -60,7 +108,7 @@ export default function CourseDetail({
           </TouchableOpacity>
 
           <Text style={styles.headerTitle}>
-            {course?.name || "Course"}
+            {courseData?.name || course?.name || "Course"} Course
           </Text>
 
           <Ionicons
@@ -261,178 +309,139 @@ export default function CourseDetail({
 
             </TouchableOpacity>
 
-            {/* ========================= */}
-            {/* DYNAMIC CONTENT */}
-            {/* ========================= */}
 
-            {showContent && (
+{showContent && (
+  <View style={styles.topicContainer}>
+
+    {loading ? (
+      <Text style={{ color: "#fff" }}>
+        Loading...
+      </Text>
+    ) : courseData?.topics?.length > 0 ? (
+
+      courseData.topics.map((topic) => {
+
+        const isOpen =
+          openTopicId === topic.id;
+
+        return (
+          <View
+            key={topic.id}
+            style={{
+              marginBottom: 12,
+            }}
+          >
+
+            <TouchableOpacity
+              style={styles.topicButton}
+              onPress={() =>
+                setOpenTopicId(
+                  isOpen ? null : topic.id
+                )
+              }
+            >
+
+              <View style={styles.topicRow}>
+
+                <Text style={styles.topicText}>
+                  {topic.name}
+                </Text>
+
+                <Ionicons
+                  name={
+                    isOpen
+                      ? "remove-circle-outline"
+                      : "add-circle-outline"
+                  }
+                  size={22}
+                  color="#38bdf8"
+                />
+
+              </View>
+
+            </TouchableOpacity>
+
+            {isOpen && (
               <View
-                style={styles.topicContainer}
+                style={styles.subTopicContainer}
               >
 
-                {course?.topics?.length >
-                0 ? (
+                {topic?.subtopics?.length > 0 ? (
 
-                  course.topics.map(
-                    (topic) => {
+                  topic.subtopics.map(
+                    (subtopic) => (
+                      <TouchableOpacity
+                        key={subtopic.id}
+                        style={styles.subTopicItem}
+                       onPress={() => {
+                       setVideoData({
+                        title: subtopic.name,
+                        video: subtopic.video,
+                       });
 
-                      const isOpen =
-                        openTopicId ===
-                        topic.id;
+                      setScreen("videoTutorial");
+                     }}
+                      >
 
-                      return (
                         <View
-                          key={topic.id}
                           style={{
-                            marginBottom: 12,
+                            flexDirection: "row",
+                            justifyContent:
+                              "space-between",
+                            alignItems:
+                              "center",
                           }}
                         >
 
-                          {/* TOPIC */}
-                          <TouchableOpacity
+                          <Text
                             style={
-                              styles.topicButton
-                            }
-                            onPress={() =>
-                              setOpenTopicId(
-                                isOpen
-                                  ? null
-                                  : topic.id
-                              )
+                              styles.subTopicText
                             }
                           >
+                            • {subtopic.name}
+                          </Text>
 
-                            <View
-                              style={
-                                styles.topicRow
-                              }
-                            >
-
-                              <Text
-                                style={
-                                  styles.topicText
-                                }
-                              >
-                                {topic.name}
-                              </Text>
-
-                              <Ionicons
-                                name={
-                                  isOpen
-                                    ? "remove-circle-outline"
-                                    : "add-circle-outline"
-                                }
-                                size={22}
-                                color="#38bdf8"
-                              />
-
-                            </View>
-
-                          </TouchableOpacity>
-
-                          {/* SUB TOPICS */}
-                          {isOpen && (
-                            <View
-                              style={
-                                styles.subTopicContainer
-                              }
-                            >
-
-                              {topic
-                                ?.subtopics
-                                ?.length >
-                              0 ? (
-
-                                topic.subtopics.map(
-                                  (
-                                    subtopic
-                                  ) => (
-                                    <TouchableOpacity
-                                      key={
-                                        subtopic.id
-                                      }
-                                      style={
-                                        styles.subTopicItem
-                                      }
-                                      onPress={() =>
-                                        setScreen({
-                                          screen:
-                                            "videoTutorial",
-                                          video:
-                                            subtopic.video,
-                                          title:
-                                            subtopic.name,
-                                        })
-                                      }
-                                    >
-
-                                      <View
-                                        style={{
-                                          flexDirection:
-                                            "row",
-                                          justifyContent:
-                                            "space-between",
-                                          alignItems:
-                                            "center",
-                                        }}
-                                      >
-
-                                        <Text
-                                          style={
-                                            styles.subTopicText
-                                          }
-                                        >
-                                          •{" "}
-                                          {
-                                            subtopic.name
-                                          }
-                                        </Text>
-
-                                        <Ionicons
-                                          name="play-circle"
-                                          size={
-                                            22
-                                          }
-                                          color="#38bdf8"
-                                        />
-
-                                      </View>
-
-                                    </TouchableOpacity>
-                                  )
-                                )
-
-                              ) : (
-                                <Text
-                                  style={{
-                                    color:
-                                      "#94a3b8",
-                                  }}
-                                >
-                                  No lessons found
-                                </Text>
-                              )}
-
-                            </View>
-                          )}
+                          <Ionicons
+                            name="play-circle"
+                            size={22}
+                            color="#38bdf8"
+                          />
 
                         </View>
-                      );
-                    }
+
+                      </TouchableOpacity>
+                    )
                   )
 
                 ) : (
                   <Text
                     style={{
-                      color: "#cbd5f1",
+                      color: "#94a3b8",
                     }}
                   >
-                    No content available
+                    No lessons found
                   </Text>
                 )}
 
               </View>
             )}
+
+          </View>
+        );
+      })
+
+    ) : (
+      <Text
+        style={{
+          color: "#cbd5f1",
+        }}
+      >
+        No content available
+      </Text>
+    )}
+
+  </View>
+)}
 
           </Card>
 
@@ -503,12 +512,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
+  paddingTop:50,
   },
 
   headerTitle: {
     color: "#fff",
     fontSize: 20,
     fontWeight: "bold",
+
   },
 
   card: {

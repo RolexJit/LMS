@@ -43,7 +43,7 @@ export default function App() {
 
   const [screen, setScreen] = useState("home");
   const [category, setCategory] = useState("HTML");
-
+const [videoData, setVideoData] = useState(null);
   const [scores, setScores] = useState({
     HTML: 0,
     JAVASCRIPT: 0,
@@ -89,23 +89,7 @@ export default function App() {
           user={user}
           scores={scores}
           setScreen={setScreen}
-
-// onEnrollCourse={(course) => {
-//   setSelectedCourse(course);
-
-//   if (course.title === "React") {
-//     setScreen("courseDetail");
-//   } 
-//   else if (course.title === "Laravel") {
-//     setScreen("LaraCourseDetails");
-//   } 
-//   else if (course.title === "PHP") {
-//     setScreen("PhpCourseDetails");
-//   } 
-//   else if (course.title === "JavaScript") {
-//     setScreen("JavaCourseDetails");
-//   }
-// }}   
+  
   onEnrollCourse={(course) => {
   setSelectedCourse(course);
   setScreen("courseDetail");
@@ -117,18 +101,22 @@ export default function App() {
       )}
       {/* COURSE DETAIL */}
 {screen === "courseDetail" && selectedCourse && (
-  <CourseDetail
-    course={selectedCourse}
-     setScreen={setScreen}
-    onBack={() => setScreen("home")}
-  />
+<CourseDetail
+  course={selectedCourse}
+  setScreen={setScreen}
+  setVideoData={setVideoData}
+  onBack={() => setScreen("home")}
+/>
 )}
 
 {screen === "videoTutorial" && (
-  <VideoTutorial onBack={() => setScreen("courseDetail")} />
+  <VideoTutorial
+    videoData={videoData}
+    onBack={() => setScreen("courseDetail")}
+  />
 )}
 
-{screen === "LaraCourseDetails" && selectedCourse && (
+{/* {screen === "LaraCourseDetails" && selectedCourse && (
   <LaraCourseDetails
     course={selectedCourse}
     onBack={() => setScreen("home")}
@@ -145,7 +133,8 @@ export default function App() {
     course={selectedCourse}
     onBack={() => setScreen("home")}
   />
-)}
+)} */}
+
       {/* PROFILE */}
       {screen === "profile" && (
         <StudentProfile

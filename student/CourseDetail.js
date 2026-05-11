@@ -3,18 +3,17 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+
+import { SafeAreaView } from "react-native-safe-area-context";
 
 import {
   Ionicons,
   MaterialIcons,
   FontAwesome5,
 } from "@expo/vector-icons";
-
-import { LinearGradient } from "expo-linear-gradient";
 
 const Card = ({ children, style }) => (
   <View style={[styles.card, style]}>
@@ -27,73 +26,66 @@ export default function CourseDetail({
   onBack,
   setScreen,
   setVideoData,
-}) { 
+}) {
 
-  // =========================
-  // CONTENT TOGGLE
-  // =========================
   const [showContent, setShowContent] =
     useState(false);
 
-  // =========================
-  // OPEN TOPIC
-  // =========================
   const [openTopicId, setOpenTopicId] =
     useState(null);
-const [courseData, setCourseData] =
-  useState(null);
 
-const [loading, setLoading] =
-  useState(true);
+  const [courseData, setCourseData] =
+    useState(null);
 
-useEffect(() => {
-  if (course?.id) {
-    fetchCourseDetails();
-  }
-}, [course]);
+  const [loading, setLoading] =
+    useState(true);
 
-const fetchCourseDetails = async () => {
-  try {
-
-    const response = await fetch(
-      `https://api.tzweb.in/api/showtopics/${course.id}`,
-      {
-        method: "GET",
-        headers: {
-          "x-api-key": "123456",
-          "Content-Type":
-            "application/json",
-        },
-      }
-    );
-
-    const result =
-      await response.json();
-
-    console.log(
-      "COURSE DETAILS:",
-      result
-    );
-
-    if (result.status) {
-      setCourseData(result.data);
+  useEffect(() => {
+    if (course?.id) {
+      fetchCourseDetails();
     }
+  }, [course?.id]);
 
-    setLoading(false);
+  const fetchCourseDetails = async () => {
+    try {
 
-  } catch (error) {
+      const response = await fetch(
+        `https://api.tzweb.in/api/showtopics/${course.id}`,
+        {
+          method: "GET",
+          headers: {
+            "x-api-key": "123456",
+            "Content-Type":
+              "application/json",
+          },
+        }
+      );
 
-    console.log(error);
+      const result =
+        await response.json();
 
-    setLoading(false);
-  }
-};
+      console.log(
+        "COURSE DETAILS:",
+        result
+      );
+
+      if (result.status) {
+        setCourseData(result.data);
+      }
+
+      setLoading(false);
+
+    } catch (error) {
+
+      console.log(error);
+
+      setLoading(false);
+    }
+  };
 
   return (
-    <LinearGradient
-      colors={["#0a192f", "#124d91", "#1f6feb"]}
-      style={styles.container}
-    >
+    <View style={styles.container}>
+
       <SafeAreaView style={{ flex: 1 }}>
 
         {/* HEADER */}
@@ -108,13 +100,16 @@ const fetchCourseDetails = async () => {
           </TouchableOpacity>
 
           <Text style={styles.headerTitle}>
-            {courseData?.name || course?.name || "Course"} Course
+            {courseData?.name ||
+              course?.name ||
+              "Course"}
           </Text>
 
+          {/* UPDATED REACT LOGO COLOR */}
           <Ionicons
             name="logo-react"
-            size={26}
-            color="#38bdf8"
+            size={28}
+            color="#61DAFB"
           />
 
         </View>
@@ -126,20 +121,23 @@ const fetchCourseDetails = async () => {
           {/* BANNER */}
           <Card style={styles.banner}>
 
+            {/* UPDATED REACT LOGO COLOR */}
             <Ionicons
               name="logo-react"
-              size={40}
-              color="#38bdf8"
+              size={50}
+              color="#61DAFB"
             />
 
             <View style={{ marginLeft: 12 }}>
+
               <Text style={styles.bannerTitle}>
-                {course?.name || "Course"} Course
+                {course?.name || "Course"}
               </Text>
 
               <Text style={styles.bannerSubtitle}>
-                Build modern UI apps
+                Learn Modern Development
               </Text>
+
             </View>
 
           </Card>
@@ -156,12 +154,14 @@ const fetchCourseDetails = async () => {
             </Text>
 
             <View style={styles.progressBar}>
+
               <View
                 style={[
                   styles.progressFill,
                   { width: "65%" },
                 ]}
               />
+
             </View>
 
             <Text style={styles.progressSub}>
@@ -178,6 +178,7 @@ const fetchCourseDetails = async () => {
           <Card style={styles.rowBetween}>
 
             <View>
+
               <Text style={styles.lessonTitle}>
                 Handling Events
               </Text>
@@ -185,14 +186,17 @@ const fetchCourseDetails = async () => {
               <Text style={styles.lessonSub}>
                 Up Next · 15 mins
               </Text>
+
             </View>
 
             <TouchableOpacity
               style={styles.button}
             >
+
               <Text style={styles.buttonText}>
                 Start
               </Text>
+
             </TouchableOpacity>
 
           </Card>
@@ -205,10 +209,11 @@ const fetchCourseDetails = async () => {
           <View style={styles.row}>
 
             <Card style={styles.practiceCard}>
+
               <FontAwesome5
                 name="question"
                 size={22}
-                color="#f59e0b"
+                color="#fff"
               />
 
               <Text style={styles.practiceTitle}>
@@ -218,13 +223,15 @@ const fetchCourseDetails = async () => {
               <Text style={styles.practiceSub}>
                 8 Questions
               </Text>
+
             </Card>
 
             <Card style={styles.practiceCard}>
+
               <MaterialIcons
                 name="code"
                 size={24}
-                color="#38bdf8"
+                color="#fff"
               />
 
               <Text style={styles.practiceTitle}>
@@ -234,13 +241,15 @@ const fetchCourseDetails = async () => {
               <Text style={styles.practiceSub}>
                 Practice
               </Text>
+
             </Card>
 
             <Card style={styles.practiceCard}>
+
               <Ionicons
-                name="documents"
+                name="document-text"
                 size={22}
-                color="#22c55e"
+                color="#fff"
               />
 
               <Text style={styles.practiceTitle}>
@@ -250,6 +259,7 @@ const fetchCourseDetails = async () => {
               <Text style={styles.practiceSub}>
                 Review
               </Text>
+
             </Card>
 
           </View>
@@ -270,16 +280,18 @@ const fetchCourseDetails = async () => {
                 setScreen("videoTutorial")
               }
             >
+
               <Text style={styles.listItem}>
                 🎥 Video Tutorials
               </Text>
+
             </TouchableOpacity>
 
             <Text style={styles.listItem}>
               📄 Documentation
             </Text>
 
-            {/* CONTENT BUTTON */}
+            {/* CONTENT */}
             <TouchableOpacity
               style={styles.contentButton}
               onPress={() =>
@@ -309,139 +321,189 @@ const fetchCourseDetails = async () => {
 
             </TouchableOpacity>
 
-
-{showContent && (
-  <View style={styles.topicContainer}>
-
-    {loading ? (
-      <Text style={{ color: "#fff" }}>
-        Loading...
-      </Text>
-    ) : courseData?.topics?.length > 0 ? (
-
-      courseData.topics.map((topic) => {
-
-        const isOpen =
-          openTopicId === topic.id;
-
-        return (
-          <View
-            key={topic.id}
-            style={{
-              marginBottom: 12,
-            }}
-          >
-
-            <TouchableOpacity
-              style={styles.topicButton}
-              onPress={() =>
-                setOpenTopicId(
-                  isOpen ? null : topic.id
-                )
-              }
-            >
-
-              <View style={styles.topicRow}>
-
-                <Text style={styles.topicText}>
-                  {topic.name}
-                </Text>
-
-                <Ionicons
-                  name={
-                    isOpen
-                      ? "remove-circle-outline"
-                      : "add-circle-outline"
-                  }
-                  size={22}
-                  color="#38bdf8"
-                />
-
-              </View>
-
-            </TouchableOpacity>
-
-            {isOpen && (
+            {showContent && (
               <View
-                style={styles.subTopicContainer}
+                style={styles.topicContainer}
               >
 
-                {topic?.subtopics?.length > 0 ? (
+                {loading ? (
 
-                  topic.subtopics.map(
-                    (subtopic) => (
-                      <TouchableOpacity
-                        key={subtopic.id}
-                        style={styles.subTopicItem}
-                       onPress={() => {
-                       setVideoData({
-                        title: subtopic.name,
-                        video: subtopic.video,
-                       });
+                  <Text
+                    style={{
+                      color: "#fff",
+                    }}
+                  >
+                    Loading...
+                  </Text>
 
-                      setScreen("videoTutorial");
-                     }}
-                      >
+                ) : courseData?.topics
+                    ?.length > 0 ? (
 
+                  courseData.topics.map(
+                    (topic) => {
+
+                      const isOpen =
+                        openTopicId ===
+                        topic.id;
+
+                      return (
                         <View
+                          key={topic.id}
                           style={{
-                            flexDirection: "row",
-                            justifyContent:
-                              "space-between",
-                            alignItems:
-                              "center",
+                            marginBottom: 12,
                           }}
                         >
 
-                          <Text
+                          <TouchableOpacity
                             style={
-                              styles.subTopicText
+                              styles.topicButton
+                            }
+                            onPress={() =>
+                              setOpenTopicId(
+                                isOpen
+                                  ? null
+                                  : topic.id
+                              )
                             }
                           >
-                            • {subtopic.name}
-                          </Text>
 
-                          <Ionicons
-                            name="play-circle"
-                            size={22}
-                            color="#38bdf8"
-                          />
+                            <View
+                              style={
+                                styles.topicRow
+                              }
+                            >
+
+                              <Text
+                                style={
+                                  styles.topicText
+                                }
+                              >
+                                {topic.name}
+                              </Text>
+
+                              <Ionicons
+                                name={
+                                  isOpen
+                                    ? "remove-circle-outline"
+                                    : "add-circle-outline"
+                                }
+                                size={22}
+                                color="#61DAFB"
+                              />
+
+                            </View>
+
+                          </TouchableOpacity>
+
+                          {isOpen && (
+                            <View
+                              style={
+                                styles.subTopicContainer
+                              }
+                            >
+
+                              {topic
+                                ?.subtopics
+                                ?.length >
+                              0 ? (
+
+                                topic.subtopics.map(
+                                  (
+                                    subtopic
+                                  ) => (
+                                    <TouchableOpacity
+                                      key={
+                                        subtopic.id
+                                      }
+                                      style={
+                                        styles.subTopicItem
+                                      }
+                                      onPress={() => {
+
+                                        setVideoData(
+                                          {
+                                            title:
+                                              subtopic.name,
+                                            video:
+                                              subtopic.video,
+                                          }
+                                        );
+
+                                        setScreen(
+                                          "videoTutorial"
+                                        );
+                                      }}
+                                    >
+
+                                      <View
+                                        style={{
+                                          flexDirection:
+                                            "row",
+                                          justifyContent:
+                                            "space-between",
+                                          alignItems:
+                                            "center",
+                                        }}
+                                      >
+
+                                        <Text
+                                          style={
+                                            styles.subTopicText
+                                          }
+                                        >
+                                          •{" "}
+                                          {
+                                            subtopic.name
+                                          }
+                                        </Text>
+
+                                        <Ionicons
+                                          name="play-circle"
+                                          size={24}
+                                          color="#61DAFB"
+                                        />
+
+                                      </View>
+
+                                    </TouchableOpacity>
+                                  )
+                                )
+
+                              ) : (
+
+                                <Text
+                                  style={{
+                                    color:
+                                      "#aaa",
+                                  }}
+                                >
+                                  No lessons found
+                                </Text>
+
+                              )}
+
+                            </View>
+                          )}
 
                         </View>
-
-                      </TouchableOpacity>
-                    )
+                      );
+                    }
                   )
 
                 ) : (
+
                   <Text
                     style={{
-                      color: "#94a3b8",
+                      color: "#aaa",
                     }}
                   >
-                    No lessons found
+                    No content available
                   </Text>
+
                 )}
 
               </View>
             )}
-
-          </View>
-        );
-      })
-
-    ) : (
-      <Text
-        style={{
-          color: "#cbd5f1",
-        }}
-      >
-        No content available
-      </Text>
-    )}
-
-  </View>
-)}
 
           </Card>
 
@@ -453,22 +515,21 @@ const fetchCourseDetails = async () => {
           <Card>
 
             <Text style={styles.listItem}>
-              ✅ Completed "State &
-              Props"
+              ✅ Completed State &
+              Props
             </Text>
 
             <Text style={styles.listItem}>
-              🏆 Passed "React Basics
-              Quiz"
+              🏆 Passed React Quiz
             </Text>
 
           </Card>
 
-          <View style={{ height: 90 }} />
+          <View style={{ height: 100 }} />
 
         </ScrollView>
 
-        {/* BOTTOM NAV */}
+        {/* NAVBAR */}
         <View style={styles.navbar}>
 
           <Ionicons
@@ -480,7 +541,7 @@ const fetchCourseDetails = async () => {
           <Ionicons
             name="book"
             size={26}
-            color="#38bdf8"
+            color="#61DAFB"
           />
 
           <Ionicons
@@ -498,13 +559,16 @@ const fetchCourseDetails = async () => {
         </View>
 
       </SafeAreaView>
-    </LinearGradient>
+
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
+    backgroundColor: "#000",
   },
 
   header: {
@@ -512,26 +576,23 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 16,
-  paddingTop:50,
+    paddingTop: 20,
   },
 
   headerTitle: {
     color: "#fff",
     fontSize: 20,
     fontWeight: "bold",
-
   },
 
   card: {
-    backgroundColor:
-      "rgba(255,255,255,0.06)",
+    backgroundColor: "#111",
     marginHorizontal: 10,
     marginVertical: 6,
     padding: 16,
     borderRadius: 16,
     borderWidth: 1,
-    borderColor:
-      "rgba(255,255,255,0.08)",
+    borderColor: "#222",
   },
 
   banner: {
@@ -546,8 +607,8 @@ const styles = StyleSheet.create({
   },
 
   bannerSubtitle: {
-    color: "#cbd5f1",
-    fontSize: 12,
+    color: "#ccc",
+    fontSize: 13,
   },
 
   sectionTitle: {
@@ -566,21 +627,20 @@ const styles = StyleSheet.create({
 
   progressBar: {
     height: 8,
-    backgroundColor:
-      "rgba(255,255,255,0.1)",
+    backgroundColor: "#333",
     borderRadius: 10,
     marginVertical: 10,
   },
 
   progressFill: {
     height: 8,
-    backgroundColor: "#38bdf8",
+    backgroundColor: "#61DAFB",
     borderRadius: 10,
   },
 
   progressSub: {
     fontSize: 12,
-    color: "#cbd5f1",
+    color: "#ccc",
   },
 
   rowBetween: {
@@ -595,19 +655,19 @@ const styles = StyleSheet.create({
   },
 
   lessonSub: {
-    color: "#cbd5f1",
+    color: "#ccc",
     fontSize: 12,
   },
 
   button: {
-    backgroundColor: "#124d91",
+    backgroundColor: "#61DAFB",
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 10,
   },
 
   buttonText: {
-    color: "#fff",
+    color: "#000",
     fontWeight: "bold",
   },
 
@@ -631,12 +691,12 @@ const styles = StyleSheet.create({
 
   practiceSub: {
     fontSize: 12,
-    color: "#cbd5f1",
+    color: "#ccc",
   },
 
   listItem: {
     paddingVertical: 8,
-    color: "#e2e8f0",
+    color: "#fff",
     fontSize: 15,
   },
 
@@ -655,8 +715,7 @@ const styles = StyleSheet.create({
   },
 
   topicButton: {
-    backgroundColor:
-      "rgba(255,255,255,0.05)",
+    backgroundColor: "#1a1a1a",
     padding: 12,
     borderRadius: 10,
   },
@@ -681,12 +740,11 @@ const styles = StyleSheet.create({
   subTopicItem: {
     paddingVertical: 8,
     borderBottomWidth: 1,
-    borderBottomColor:
-      "rgba(255,255,255,0.05)",
+    borderBottomColor: "#222",
   },
 
   subTopicText: {
-    color: "#cbd5f1",
+    color: "#fff",
     fontSize: 14,
   },
 
@@ -694,7 +752,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     padding: 14,
-    backgroundColor:
-      "rgba(0,0,0,0.2)",
+    backgroundColor: "#111",
+    borderTopWidth: 1,
+    borderTopColor: "#222",
+    
   },
+
 });

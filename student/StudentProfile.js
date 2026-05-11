@@ -3,318 +3,452 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  SafeAreaView,
+  ScrollView,
   Image,
-  ScrollView
+  TouchableOpacity,
 } from "react-native";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { LinearGradient } from "expo-linear-gradient";
 
-/* ===== DASHBOARD COLORS ===== */
-const COLORS = {
-  primary: "#8b5cf6",
-  secondary: "#22d3ee",
-  background: "#020617",
-  card: "#1e293b",
-  text: "#ffffff",
-  textSoft: "#c7d2fe"
-};
-
-export default function StudentProfileScreen({ user, onBack,onLogout }) {
+import Ionicons from "react-native-vector-icons/Ionicons";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import BottomNavigation from "../components/BottomNavigation";
+export default function ProfileScreen({
+  onBack,
+  onOpenCourses,
+  onOpenAttendance,
+  onOpenProfile,
+  activeScreen,
+  setScreen,
+}) {
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>My Profile</Text>
 
-{/* HEADER */}
-<LinearGradient
-  colors={["#0f172a", "#1e293b", "#312e81"]}
-  style={styles.header}
->
-  <TouchableOpacity onPress={onBack} style={styles.iconLeft}>
-    <Ionicons name="arrow-back" size={24} color="#fff" />
-  </TouchableOpacity>
-
-  <TouchableOpacity style={styles.iconRight}>
-    <Ionicons name="settings-outline" size={22} color="#fff" />
-  </TouchableOpacity>
-
-  {/* HERO PROFILE */}
-  <View style={styles.heroProfile}>
-    <Image
-      source={{ uri: "https://s1.dmcdn.net/u/B0lsg1dzxtqSvSrIj/240x240" }}
-      style={styles.heroAvatar}
-    />
-
-    <Text style={styles.heroName}>
-      {user?.fname || "Puja"} {user?.lname || "Sen"}
-    </Text>
-
-    <Text style={styles.heroGrade}>MCA • 2nd Year</Text>
-  </View>
-</LinearGradient>
-
-
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 50 }}>
-
-
-        {/* INFO CARD */}
-        <SectionTitle title="Information" />
-        <GlassCard>
-          <InfoRow icon="badge" label="Enrollment No" value={`ENR-${user?.id || 2025}`} />
-          <InfoRow icon="email" label="College Email" value="student@university.edu" />
-          <InfoRow icon="phone" label="Phone" value="+91 98765 43210" />
-          <InfoRow icon="school" label="University" value="NIT" />
-          <InfoRow icon="menu-book" label="Department" value="CSE" />
-          <InfoRow icon="date-range" label="Year" value="2nd Year" />
-        </GlassCard>
-
-        {/* SUBJECTS */}
-        <SectionTitle title="Current Subjects" />
-        <GlassCard>
-          <InfoRow icon="menu-book" label="Data Structures" value="A Grade" />
-          <InfoRow icon="menu-book" label="Operating Systems" value="B+" />
-          <InfoRow icon="menu-book" label="Database Systems" value="A" />
-          <InfoRow icon="menu-book" label="Computer Networks" value="A-" />
-        </GlassCard>
-
-        {/* STATS */}
-        <SectionTitle title="Quiz Performance" />
-        <StatRow>
-          <StatBox label="Quizzes" value="12" />
-          <StatBox label="Average" value="82%" />
-          <StatBox label="Rank" value="#5" />
-        </StatRow>
-
-        <SectionTitle title="Academic Overview" />
-        <StatRow>
-          <StatBox label="CGPA" value="8.2" />
-          <StatBox label="Credits" value="86" />
-          <StatBox label="Semester" value="3th" />
-        </StatRow>
-
-        <SectionTitle title="Attendance" />
-        <StatRow>
-          <StatBox label="Overall" value="91%" />
-          <StatBox label="Month" value="88%" />
-          <StatBox label="Leaves" value="3" />
-        </StatRow>
-
-        {/* ACTIONS */}
-        <SectionTitle title="Quick Actions" />
-        <View style={styles.actionsRow}>
-          <ActionBtn icon="edit" label="Edit" />
-          <ActionBtn icon="lock" label="Password" />
-          <ActionBtn icon="logout" label="Logout" onPress={onLogout}/>
+          <View style={styles.headerIcons}>
+            <Ionicons name="notifications-outline" size={22} color="#000" />
+            <Ionicons name="settings-outline" size={22} color="#000" />
+          </View>
         </View>
 
+        {/* Profile Card */}
+        <View style={styles.profileCard}>
+          <View style={styles.profileTop}>
+            <Image
+              source={{
+                uri: "https://i.pravatar.cc/150?img=12",
+              }}
+              style={styles.profileImage}
+            />
+
+            <View style={{ marginLeft: 15, flex: 1 }}>
+              <Text style={styles.profileName}>Arjun Sharma</Text>
+
+              <Text style={styles.studentId}>Student ID: STU20240056</Text>
+
+              <View style={styles.badgesContainer}>
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>🎓 Grade 11</Text>
+                </View>
+
+                <View style={styles.badge}>
+                  <Text style={styles.badgeText}>⭐ Science Stream</Text>
+                </View>
+              </View>
+            </View>
+          </View>
+
+          <TouchableOpacity style={styles.editPhotoBtn}>
+            <Ionicons name="camera" size={16} color="#fff" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Menu Buttons */}
+        <View style={styles.menuContainer}>
+          <MenuItem icon="book" title="My Courses" />
+          <MenuItem icon="calendar-month" title="Attendance" />
+          <MenuItem icon="star" title="Grades" />
+          <MenuItem icon="description" title="Certificates" />
+        </View>
+
+        {/* Personal Information */}
+        <InfoSection title="Personal Information">
+          <InfoRow label="Full Name" value="Arjun Sharma" />
+          <InfoRow label="Email" value="arjun.sharma@example.com" />
+          <InfoRow label="Mobile" value="+91 98765 43210" />
+          <InfoRow label="Date of Birth" value="15 May 2007" />
+          <InfoRow label="Gender" value="Male" />
+          <InfoRow label="Address" value="221B Baker Street, London, UK" />
+        </InfoSection>
+
+        {/* Academic Information */}
+        <InfoSection title="Academic Information">
+          <InfoRow label="Student ID" value="STU20240056" />
+          <InfoRow label="School / University" value="Greenfield High School" />
+          <InfoRow label="Class / Grade" value="Grade 11" />
+          <InfoRow label="Stream / Major" value="Science" />
+          <InfoRow label="Year of Study" value="2024 - 2025" />
+        </InfoSection>
+
+        {/* Account & Security */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionTitle}>Account & Security</Text>
+          </View>
+
+          <TouchableOpacity style={styles.securityRow}>
+            <Text style={styles.securityText}>Change Password</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.securityRow}>
+            <View style={styles.linkedAccounts}>
+              <Text style={styles.securityText}>Linked Accounts</Text>
+
+              <View style={{ flexDirection: "row", marginLeft: 10 }}>
+                <FontAwesome5
+                  name="google"
+                  size={16}
+                  color="#DB4437"
+                  style={{ marginHorizontal: 4 }}
+                />
+                <FontAwesome5
+                  name="apple"
+                  size={16}
+                  color="#000"
+                  style={{ marginHorizontal: 4 }}
+                />
+                <FontAwesome5
+                  name="microsoft"
+                  size={16}
+                  color="#00A4EF"
+                  style={{ marginHorizontal: 4 }}
+                />
+              </View>
+            </View>
+
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
+        </View>
+
+        {/* Premium Card */}
+        <View style={styles.premiumCard}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.premiumTitle}>Go Premium</Text>
+
+            <Text style={styles.premiumText}>
+              Unlock exclusive courses, content and features for your learning
+              journey.
+            </Text>
+
+            <TouchableOpacity style={styles.premiumBtn}>
+              <Text style={styles.premiumBtnText}>Upgrade Now</Text>
+            </TouchableOpacity>
+          </View>
+
+          <Image
+            source={{
+              uri: "https://cdn-icons-png.flaticon.com/512/4140/4140048.png",
+            }}
+            style={styles.premiumImage}
+          />
+        </View>
       </ScrollView>
-    </View>
+
+      {/* Bottom Navigation */}
+      <View style={styles.bottomNav}>
+
+<BottomNavigation
+  onBack={() => setScreen("home")}
+  onOpenCourses={() => setScreen("home")}
+  onOpenAttendance={() => setScreen("attendance")}
+  onOpenProfile={() => setScreen("profile")}
+  activeScreen={activeScreen}
+/>
+
+      </View>
+    </SafeAreaView>
   );
 }
 
-/* COMPONENTS */
+/* ---------------- COMPONENTS ---------------- */
 
-const GlassCard = ({ children }) => (
-  <View style={styles.card}>{children}</View>
-);
+const MenuItem = ({ icon, title }) => {
+  return (
+    <TouchableOpacity style={styles.menuItem}>
+      <MaterialIcons name={icon} size={26} color="#6C4EFF" />
+      <Text style={styles.menuText}>{title}</Text>
+    </TouchableOpacity>
+  );
+};
 
-const InfoRow = ({ icon, label, value }) => (
-  <View style={styles.infoRow}>
-    <MaterialIcons name={icon} size={20} color={COLORS.secondary} />
-    <View style={{ marginLeft: 12 }}>
+const InfoSection = ({ title, children }) => {
+  return (
+    <View style={styles.section}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>{title}</Text>
+
+        <TouchableOpacity>
+          <Text style={styles.editText}>Edit ✏️</Text>
+        </TouchableOpacity>
+      </View>
+
+      {children}
+    </View>
+  );
+};
+
+const InfoRow = ({ label, value }) => {
+  return (
+    <View style={styles.infoRow}>
       <Text style={styles.infoLabel}>{label}</Text>
       <Text style={styles.infoValue}>{value}</Text>
     </View>
-  </View>
-);
-
-const StatRow = ({ children }) => (
-  <View style={styles.statsRow}>{children}</View>
-);
-
-const StatBox = ({ label, value }) => (
-  <LinearGradient
-    colors={[COLORS.primary, COLORS.secondary]}
-    style={styles.statBox}
-  >
-    <Text style={styles.statValue}>{value}</Text>
-    <Text style={styles.statLabel}>{label}</Text>
-  </LinearGradient>
-);
-
-const ActionBtn = ({ icon, label, onPress }) => (
-  <TouchableOpacity style={styles.actionBtn} onPress={onPress}>
-    <MaterialIcons name={icon} size={22} color="#fff" />
-    <Text style={styles.actionText}>{label}</Text>
-  </TouchableOpacity>
-);
+  );
+};
 
 
-const SectionTitle = ({ title }) => (
-  <Text style={styles.sectionTitle}>{title}</Text>
-);
 
-/* STYLES */
+/* ---------------- STYLES ---------------- */
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    backgroundColor: COLORS.background
+    backgroundColor: "#fff",
   },
-header: {
-  paddingTop: 60,
-  paddingBottom: 40,
-  borderBottomLeftRadius: 40,
-  borderBottomRightRadius: 40,
-  alignItems: "center",
-  justifyContent: "center",
-},
 
-heroProfile: {
-  alignItems: "center",
-  marginTop: 10,
-},
-
-heroAvatar: {
-  width: 110,
-  height: 110,
-  borderRadius: 55,
-  borderWidth: 4,
-  borderColor: "#fff",
-  marginBottom: 10,
-},
-
-heroName: {
-  color: "#fff",
-  fontSize: 20,
-  fontWeight: "bold",
-},
-
-heroGrade: {
-  color: "rgba(255,255,255,0.85)",
-  fontSize: 13,
-  marginTop: 4,
-},
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingTop: 15,
+    paddingBottom: 10,
+  },
 
   headerTitle: {
-    color: "#fff",
-    fontSize: 20,
-    fontWeight: "bold"
-  },
-
-  heroLogo: {
-  backgroundColor: "rgba(255,255,255,0.18)",
-  width: 64,
-  height: 64,
-  borderRadius: 32,
-  alignItems: "center",
-  justifyContent: "center",
-  marginBottom: 8
-},
-
-  iconLeft: { position: "absolute", left: 20, top: 60 },
-  iconRight: { position: "absolute", right: 20, top: 60 },
-
-  avatarWrapper: { alignItems: "center", marginTop: -60 },
-
-  avatar: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    borderWidth: 4,
-    borderColor: COLORS.primary,
-    backgroundColor: "#111"
-  },
-
-  name: {
     fontSize: 22,
-    fontWeight: "bold",
-    marginTop: 10,
-    color: COLORS.text
+    fontWeight: "700",
+    color: "#000",
   },
 
-  grade: {
-    color: COLORS.textSoft,
-    marginTop: 4
+  headerIcons: {
+    flexDirection: "row",
+    width: 60,
+    justifyContent: "space-between",
+  },
+
+  profileCard: {
+    backgroundColor: "#000",
+    marginHorizontal: 20,
+    borderRadius: 20,
+    padding: 20,
+    position: "relative",
+  },
+
+  profileTop: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  profileImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: "#fff",
+  },
+
+  profileName: {
+    color: "#fff",
+    fontSize: 22,
+    fontWeight: "700",
+  },
+
+  studentId: {
+    color: "#ddd",
+    marginTop: 4,
+    fontSize: 13,
+  },
+
+  badgesContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 10,
+  },
+
+  badge: {
+    backgroundColor: "#222",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+
+  badgeText: {
+    color: "#fff",
+    fontSize: 12,
+  },
+
+  editPhotoBtn: {
+    position: "absolute",
+    bottom: 18,
+    left: 72,
+    backgroundColor: "#6C4EFF",
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  menuContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 20,
+    marginTop: 20,
+  },
+
+  menuItem: {
+    backgroundColor: "#fff",
+    width: "23%",
+    borderRadius: 15,
+    alignItems: "center",
+    paddingVertical: 18,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+
+  menuText: {
+    fontSize: 11,
+    marginTop: 8,
+    textAlign: "center",
+    color: "#000",
+    fontWeight: "600",
+  },
+
+  section: {
+    backgroundColor: "#fff",
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderRadius: 18,
+    padding: 18,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 3,
+  },
+
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
   },
 
   sectionTitle: {
-    marginLeft: 20,
-    fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 22,
-    color: COLORS.secondary
+    fontSize: 17,
+    fontWeight: "700",
+    color: "#000",
   },
 
-  card: {
-    backgroundColor: COLORS.card,
-    marginHorizontal: 18,
-    marginTop: 12,
-    borderRadius: 20,
-    padding: 18,
-    elevation: 6
+  editText: {
+    color: "#6C4EFF",
+    fontWeight: "600",
   },
 
   infoRow: {
     flexDirection: "row",
-    marginBottom: 14
+    justifyContent: "space-between",
+    marginBottom: 14,
   },
 
   infoLabel: {
-    color: COLORS.textSoft,
-    fontSize: 12
+    color: "#666",
+    width: "40%",
+    fontSize: 13,
   },
 
   infoValue: {
-    fontSize: 15,
-    fontWeight: "bold",
-    color: COLORS.text
+    color: "#000",
+    width: "58%",
+    textAlign: "right",
+    fontWeight: "500",
+    fontSize: 13,
   },
 
-  statsRow: {
+  securityRow: {
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 14
-  },
-
-  statBox: {
-    width: 100,
-    paddingVertical: 20,
-    borderRadius: 18,
-    alignItems: "center"
-  },
-
-  statValue: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold"
-  },
-
-  statLabel: {
-    color: "#fff",
-    fontSize: 12,
-    marginTop: 4
-  },
-
-  actionsRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginVertical: 20
-  },
-
-  actionBtn: {
-    backgroundColor: COLORS.primary,
-    width: 100,
-    paddingVertical: 16,
-    borderRadius: 18,
+    justifyContent: "space-between",
     alignItems: "center",
-    elevation: 5
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
   },
 
-  actionText: {
+  securityText: {
+    fontSize: 15,
+    color: "#000",
+    fontWeight: "500",
+  },
+
+  linkedAccounts: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  premiumCard: {
+    backgroundColor: "#111",
+    marginHorizontal: 20,
+    marginVertical: 20,
+    borderRadius: 20,
+    padding: 20,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  premiumTitle: {
     color: "#fff",
-    fontSize: 12,
-    marginTop: 6
-  }
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+
+  premiumText: {
+    color: "#ccc",
+    fontSize: 13,
+    lineHeight: 20,
+    marginBottom: 15,
+  },
+
+  premiumBtn: {
+    backgroundColor: "#6C4EFF",
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    borderRadius: 12,
+    alignSelf: "flex-start",
+  },
+
+  premiumBtnText: {
+    color: "#fff",
+    fontWeight: "700",
+  },
+
+  premiumImage: {
+    width: 100,
+    height: 100,
+    resizeMode: "contain",
+  },
+
+
+
 
 });

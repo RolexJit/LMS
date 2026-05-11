@@ -11,7 +11,7 @@ import {
   Animated,
 } from "react-native";
 
-export default function StudentDashboard({ onEnrollCourse }) {
+export default function StudentDashboard({ setScreen, onEnrollCourse }) {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,6 +25,45 @@ export default function StudentDashboard({ onEnrollCourse }) {
 
   // MENU ANIMATION
   const [animation] = useState(new Animated.Value(0));
+
+  // RECENT REELS DATA
+  const reelsData = [
+    {
+      id: 1,
+      title: "React Native UI Design",
+      image:
+        "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+      views: "12K Views",
+    },
+    {
+      id: 2,
+      title: "JavaScript ES6 Tricks",
+      image:
+        "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
+      views: "9K Views",
+    },
+    {
+      id: 3,
+      title: "Full Stack Development",
+      image:
+        "https://images.unsplash.com/photo-1555066931-4365d14bab8c",
+      views: "20K Views",
+    },
+    {
+      id: 4,
+      title: "MERN Stack Crash Course",
+      image:
+        "https://images.unsplash.com/photo-1531297484001-80022131f5a1",
+      views: "15K Views",
+    },
+    {
+      id: 5,
+      title: "UI/UX Masterclass",
+      image:
+        "https://images.unsplash.com/photo-1522542550221-31fd19575a2d",
+      views: "18K Views",
+    },
+  ];
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -98,9 +137,9 @@ export default function StudentDashboard({ onEnrollCourse }) {
   };
 
   // MENU ITEM ACTION
-  const handleMenuAction = (title) => {
-    Alert.alert(title, `${title} clicked`);
-  };
+  // const handleMenuAction = (title) => {
+  //   Alert.alert(title, `${title} clicked`);
+  // };
 
   return (
     <View style={{ flex: 1 }}>
@@ -129,7 +168,10 @@ export default function StudentDashboard({ onEnrollCourse }) {
           <TouchableOpacity
             style={[
               styles.toggleBtn,
-              { backgroundColor: theme.card,marginTop:25 },
+              {
+                backgroundColor: theme.card,
+                marginTop: 25,
+              },
             ]}
             onPress={() =>
               setDarkMode(!darkMode)
@@ -257,6 +299,26 @@ export default function StudentDashboard({ onEnrollCourse }) {
           />
         </View>
 
+        {/* RECENT REELS SECTION */}
+        <SectionTitle
+          title="Recent Reels"
+          theme={theme}
+        />
+
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ paddingLeft: 15 }}
+        >
+          {reelsData.map((reel) => (
+            <ReelCard
+              key={reel.id}
+              reel={reel}
+              theme={theme}
+            />
+          ))}
+        </ScrollView>
+
         {/* COURSES */}
         <SectionTitle
           title="Popular Courses"
@@ -345,7 +407,6 @@ export default function StudentDashboard({ onEnrollCourse }) {
 
       {/* FLOATING MENU */}
       <View style={styles.floatingContainer}>
-        {/* MENU ITEMS */}
         {menuOpen && (
           <Animated.View
             style={{
@@ -360,28 +421,27 @@ export default function StudentDashboard({ onEnrollCourse }) {
               opacity: animation,
             }}
           >
-            <TouchableOpacity
-              style={[
-                styles.menuItem,
-                { backgroundColor: theme.card },
-              ]}
-              onPress={() =>
-                handleMenuAction("Profile")
-              }
-            >
-              <Text style={styles.menuIcon}>
-                👤
-              </Text>
-            </TouchableOpacity>
+<TouchableOpacity
+  style={[
+    styles.menuItem,
+    { backgroundColor: theme.card },
+  ]}
+onPress={() => {
+  setMenuOpen(false);
+  setScreen("profile");
+}}
+>
+  <Text style={styles.menuIcon}>👤</Text>
+</TouchableOpacity>
 
             <TouchableOpacity
               style={[
                 styles.menuItem,
                 { backgroundColor: theme.card },
               ]}
-              onPress={() =>
-                handleMenuAction("Courses")
-              }
+              // onPress={() =>
+              //   handleMenuAction("Courses")
+              // }
             >
               <Text style={styles.menuIcon}>
                 📚
@@ -393,9 +453,9 @@ export default function StudentDashboard({ onEnrollCourse }) {
                 styles.menuItem,
                 { backgroundColor: theme.card },
               ]}
-              onPress={() =>
-                handleMenuAction("Settings")
-              }
+              // onPress={() =>
+              //   handleMenuAction("Settings")
+              // }
             >
               <Text style={styles.menuIcon}>
                 ⚙️
@@ -407,9 +467,7 @@ export default function StudentDashboard({ onEnrollCourse }) {
                 styles.menuItem,
                 { backgroundColor: theme.card },
               ]}
-              onPress={() =>
-                handleMenuAction("Logout")
-              }
+              
             >
               <Text style={styles.menuIcon}>
                 🚪
@@ -516,6 +574,46 @@ const CourseCard = ({
       </Text>
     </TouchableOpacity>
   </View>
+);
+
+// REELS CARD COMPONENT
+const ReelCard = ({ reel, theme }) => (
+  <TouchableOpacity
+    style={[
+      styles.reelCard,
+      { backgroundColor: theme.card },
+    ]}
+  >
+    <Image
+      source={{ uri: reel.image }}
+      style={styles.reelImage}
+    />
+
+    <View style={styles.playButton}>
+      <Text style={{ color: "#fff", fontSize: 22 }}>
+        ▶
+      </Text>
+    </View>
+
+    <Text
+      style={[
+        styles.reelTitle,
+        { color: theme.text },
+      ]}
+      numberOfLines={1}
+    >
+      {reel.title}
+    </Text>
+
+    <Text
+      style={{
+        color: theme.subText,
+        fontSize: 12,
+      }}
+    >
+      {reel.views}
+    </Text>
+  </TouchableOpacity>
 );
 
 const MentorCard = ({
@@ -692,6 +790,39 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "center",
     marginTop: 10,
+  },
+
+  // REELS
+  reelCard: {
+    width: 170,
+    borderRadius: 18,
+    padding: 10,
+    marginRight: 15,
+    marginBottom: 10,
+  },
+
+  reelImage: {
+    width: "100%",
+    height: 220,
+    borderRadius: 15,
+  },
+
+  playButton: {
+    position: "absolute",
+    top: "40%",
+    left: "42%",
+    backgroundColor: "rgba(0,0,0,0.6)",
+    width: 45,
+    height: 45,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  reelTitle: {
+    marginTop: 10,
+    fontWeight: "bold",
+    fontSize: 15,
   },
 
   mentorContainer: {

@@ -136,16 +136,18 @@ const [videoData, setVideoData] = useState(null);
 )} */}
 
       {/* PROFILE */}
-      {screen === "profile" && (
-        <StudentProfile
-          user={user}
-          onBack={() => setScreen("home")}
-          onLogout={() => {
-    setUser(null);      // or clear auth
-    setScreen("home");
-  }}
-        />
-      )}
+{screen === "profile" && (
+  <StudentProfile
+    user={user}
+    onBack={() => setScreen("home")}
+    onLogout={() => {
+      setUser(null);
+      setScreen("home");
+    }}
+    setScreen={setScreen}   // ✅ ADD THIS
+    activeScreen={screen}
+  />
+)}
       {/* ASSIGNMENT */}
       {screen === "assignment" && (
         <AssignmentScreen
